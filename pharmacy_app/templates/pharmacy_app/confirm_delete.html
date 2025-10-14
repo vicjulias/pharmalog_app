@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Delete | PharmaLog{% endblock title %}
+
+{% block content %}
+<div class="max-w-xl mx-auto mt-10 p-8 bg-white rounded-2xl shadow-2xl border border-red-300">
+    <h1 class="text-3xl font-bold text-center text-red-700 mb-6">
+        Confirm Deletion
+    </h1>
+    
+    <p class="text-lg text-gray-700 mb-6 text-center">
+        Are you absolutely sure you want to delete the patient record for:
+        <br>
+        <span class="font-extrabold text-red-600">{{ patient.first_name }} {{ patient.last_name }} (NHS: {{ patient.nhs_number }})</span>?
+    </p>
+
+    <div class="p-4 bg-red-100 border-l-4 border-red-500 text-red-700 mb-8 rounded-lg">
+        <p class="font-semibold">Warning:</p>
+        <p class="text-sm">This action cannot be undone. All associated data will be permanently removed.</p>
+    </div>
+
+    <form method="post" class="flex justify-center space-x-4">
+        {% csrf_token %}
+        <button type="submit" 
+                class="w-1/2 py-3 px-4 border border-transparent rounded-xl shadow-lg text-white font-semibold 
+                       bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150">
+            Yes, Delete
+        </button>
+        <a href="{% url 'patient_detail' pk=patient.pk %}" 
+           class="w-1/2 text-center py-3 px-4 border border-gray-300 rounded-xl shadow-lg text-gray-700 font-semibold 
+                  bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock content %}

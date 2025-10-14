@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome | PharmaLog App{% endblock title %}
+
+{% block content %}
+<div class="text-center py-16 bg-white rounded-xl shadow-lg">
+    <h1 class="text-5xl font-extrabold text-indigo-800 mb-4">
+        Welcome to PharmaLog
+    </h1>
+    <p class="text-xl text-gray-600 mb-8">
+        Your secure platform for patient and prescription management.
+    </p>
+
+    {% if user.is_authenticated %}
+        <div class="space-y-4">
+            <p class="text-lg text-green-700 font-medium">
+                You are logged in as {{ user.username }}.
+            </p>
+            <a href="{% url 'patient_list' %}" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform transition duration-300 hover:scale-105">
+                Go to Patient Records
+            </a>
+        </div>
+    {% else %}
+        <a href="{% url 'login' %}" class="inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform transition duration-300 hover:scale-105">
+            Get Started: Login
+        </a>
+        <p class="mt-4 text-sm text-gray-500">
+            Secure access required for patient data management.
+        </p>
+    {% endif %}
+</div>
+{% endblock content %}

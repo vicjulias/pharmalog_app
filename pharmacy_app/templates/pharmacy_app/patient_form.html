@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if patient %}Edit {{ patient.first_name }} {{ patient.last_name }}{% else %}Add New Patient{% endif %} | PharmaLog
+{% endblock title %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-2xl border border-indigo-100">
+    <h1 class="text-3xl font-bold text-center mb-8 
+        {% if patient %}text-yellow-700{% else %}text-indigo-700{% endif %}">
+        {% if patient %}
+            Edit Patient Record: {{ patient.first_name }} {{ patient.last_name }}
+        {% else %}
+            Add New Patient Record
+        {% endif %}
+    </h1>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="grid grid-cols-1 gap-2">
+            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                {{ field.label }}{% if field.field.required %} <span class="text-red-500">*</span>{% endif %}
+            </label>
+            
+            {{ field.errors }}
+            {{ field }}
+            
+            {% if field.help_text %}
+                <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <button type="submit" 
+                class="w-full py-3 px-4 border border-transparent rounded-xl shadow-lg text-white font-semibold 
+                       {% if patient %}bg-yellow-600 hover:bg-yellow-700{% else %}bg-indigo-600 hover:bg-indigo-700{% endif %} 
+                       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 transform hover:scale-[1.01]">
+            {% if patient %}Save Changes{% else %}Create Patient Record{% endif %}
+        </button>
+    </form>
+    
+    <div class="mt-6 text-center">
+        <a href="{% url 'patient_list' %}" class="text-gray-600 hover:text-gray-800 hover:underline">
+            Cancel and return to list
+        </a>
+    </div>
+</div>
+
+<style>
+    /* Styles to make Django forms with Tailwind */
+    /* Border color and background color to ensure visibility */
+    input[type="text"], input[type="date"], input[type="number"], textarea, select {
+        @apply w-full p-3 
+               border border-gray-400  
+               bg-gray-50              
+               rounded-lg 
+               focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
+               transition duration-100;
+    }
+    
+    /* Django-generated <select> element (dropdown) is also styled */
+    select {
+        @apply appearance-none;
+    }
+</style>
+{% endblock content %}

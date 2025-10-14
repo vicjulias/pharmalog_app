@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PharmaLog App{% endblock title %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font from Google Fonts webste */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fafc; /* Light gray background */
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="bg-indigo-700 shadow-lg sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{% url 'home' %}" class="text-white text-2xl font-bold rounded-md px-3 py-2 hover:bg-indigo-600 transition duration-150">
+                        <svg class="w-6 h-6 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.275a1.8 1.8 0 011.666 1.157l-1.95 2.148c-.96.657-2.394-.746-1.434-1.403l2.25-1.55zM12 21.75V21m3 0a9 9 0 00-18 0m18 0a9 9 0 01-18 0"></path></svg>
+                        PharmaLog
+                    </a>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'patient_list' %}" class="text-white hover:bg-indigo-600 rounded-md px-3 py-2 text-sm font-medium transition duration-150">
+                            Patient List
+                        </a>
+                        <span class="text-indigo-200 text-sm">Hello, {{ user.username }}</span>
+                        <a href="{% url 'logout' %}" class="bg-indigo-500 hover:bg-red-500 text-white font-semibold py-1 px-3 border border-red-500 rounded-lg shadow transition duration-150">
+                            Logout
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="bg-white text-indigo-700 hover:bg-gray-100 font-semibold py-1 px-3 border border-transparent rounded-lg shadow transition duration-150">
+                            Login
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow p-4 md:p-8">
+        <div class="max-w-7xl mx-auto">
+            {% for message in messages %}
+                <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg shadow" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            {% block content %}
+                {% endblock content %}
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center p-4 mt-auto">
+        <p class="text-sm">
+            &copy; 2025 PharmaLog App. Built with love and care.
+        </p>
+    </footer>
+
+</body>
+</html>
