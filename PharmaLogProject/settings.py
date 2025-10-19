@@ -2,19 +2,20 @@
 Django settings for PharmaLogProject project.
 """
 
-import os
 from pathlib import Path
+from decouple import config
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Paths inside the project like this: BASE_DIR / 'The example you gave: BASE_DIR / 'The example you gave: BASE_DIR / 'sub-directory'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'YOUR_NEW_VERY_LONG_RANDOM_SECRET_KEY_HERE'
+# SECURITY WARNING: keep it a secret
+# Read SECRET_KEY from environment or .env using python-decouple. Keep a fallback for local development.
+SECRET_KEY = config('SECRET_KEY', default='YOUR_NEW_VERY_LONG_RANDOM_SECRET_KEY_HERE')
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# SECURITY WARNING: don't run with debug turned on in production
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 
 # Application definition
 INSTALLED_APPS = [
@@ -62,12 +63,12 @@ WSGI_APPLICATION = 'PharmaLogProject.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pharmalog_db',     
-        'USER': 'supuser',
-        'PASSWORD': 'supuser1',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': config('DB_ENGINE', default='django.db.backends.postgresql'),
+        'NAME': config('DB_NAME', default='pharmalog_db'),
+        'USER': config('DB_USER', default='supuser'),
+        'PASSWORD': config('DB_PASSWORD', default='supuser1'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
@@ -99,3 +100,40 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'  # Redirects to home page after successful login
 LOGOUT_REDIRECT_URL = '/' # Redirects to home page after successful logout
 LOGIN_URL = '/login/'     # URL to redirect to when login is required
+
+# Minimal file logging so server-side validation errors and tracebacks are
+# persisted to logs/django.log during interactive debugging. This is safe
+# for development; remove or restrict in production.
+import os
+LOGS_DIR = os.path.join(BASE_DIR, 'logs')
+os.makedirs(LOGS_DIR, exist_ok=True)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(LOGS_DIR, 'django.log'),
+            'formatter': 'standard',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'pharmacy_app': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    }
+}

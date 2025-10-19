@@ -31,14 +31,48 @@
                 <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>
             {% endif %}
         </div>
-        {% endfor %}
+    {% endfor %}
 
+        {% if patient %}
+            {% if perms.pharmacy_app.change_patient or perms.pharmacy_app.change_patient_medications %}
+                <!-- allowed to submit -->
+            {% else %}
+                {% comment %} fallthrough to disabled below {% endcomment %}
+            {% endif %}
+        {% else %}
+            {% if perms.pharmacy_app.add_patient %}
+                <!-- allowed to submit -->
+            {% endif %}
+        {% endif %}
+    {% comment %} Show submit button only if user is superuser or has the right perms {% endcomment %}
+    {% if request.user.is_superuser %}
+    <button type="submit" 
+        class="w-full py-3 px-4 border border-transparent rounded-xl shadow-lg text-white font-semibold 
+               {% if patient %}bg-yellow-600 hover:bg-yellow-700{% else %}bg-indigo-600 hover:bg-indigo-700{% endif %} 
+               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 transform hover:scale-[1.01]">
+        {% if patient %}Save Changes{% else %}Create Patient Record{% endif %}
+    </button>
+    {% elif patient %}
+        {% if perms.pharmacy_app.change_patient or perms.pharmacy_app.change_patient_medications %}
         <button type="submit" 
-                class="w-full py-3 px-4 border border-transparent rounded-xl shadow-lg text-white font-semibold 
-                       {% if patient %}bg-yellow-600 hover:bg-yellow-700{% else %}bg-indigo-600 hover:bg-indigo-700{% endif %} 
-                       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 transform hover:scale-[1.01]">
-            {% if patient %}Save Changes{% else %}Create Patient Record{% endif %}
+            class="w-full py-3 px-4 border border-transparent rounded-xl shadow-lg text-white font-semibold 
+                   bg-yellow-600 hover:bg-yellow-700 
+                   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 transform hover:scale-[1.01]">
+            Save Changes
         </button>
+        {% else %}
+        <div class="text-center text-gray-600 p-4">You do not have permission to make changes to this record.</div>
+        {% endif %}
+    {% elif not patient %}
+        {% if perms.pharmacy_app.add_patient %}
+        <button type="submit" 
+            class="w-full py-3 px-4 border border-transparent rounded-xl shadow-lg text-white font-semibold bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 transform hover:scale-[1.01]">
+            Create Patient Record
+        </button>
+        {% else %}
+        <div class="text-center text-gray-600 p-4">You do not have permission to make changes to this record.</div>
+        {% endif %}
+    {% endif %}
     </form>
     
     <div class="mt-6 text-center">
@@ -48,21 +82,5 @@
     </div>
 </div>
 
-<style>
-    /* Styles to make Django forms with Tailwind */
-    /* Border color and background color to ensure visibility */
-    input[type="text"], input[type="date"], input[type="number"], textarea, select {
-        @apply w-full p-3 
-               border border-gray-400  
-               bg-gray-50              
-               rounded-lg 
-               focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
-               transition duration-100;
-    }
-    
-    /* Django-generated <select> element (dropdown) is also styled */
-    select {
-        @apply appearance-none;
-    }
-</style>
+<!-- Form styling moved to static/css/style.css -->
 {% endblock content %}

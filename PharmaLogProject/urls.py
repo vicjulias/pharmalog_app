@@ -18,6 +18,8 @@ urlpatterns = [
     
     # Home page URL
     path('', TemplateView.as_view(template_name='index.html'), name='home'),
+    # Registration
+    path('register/', views.register, name='register'),
     
     # --- Application URLs (Patient CRUD) ---
 

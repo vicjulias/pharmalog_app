@@ -10,14 +10,18 @@
             <p class="text-lg text-gray-500">NHS ID: <span class="font-mono text-indigo-600">{{ patient.nhs_number }}</span></p>
         </div>
         <div class="space-x-2">
+            {% if perms.pharmacy_app.change_patient or perms.pharmacy_app.change_patient_medications %}
             <a href="{% url 'patient_update' pk=patient.pk %}" 
-               class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-xl shadow transition duration-150">
+               class="bg-yellow-700 hover:bg-yellow-800 text-white font-semibold py-2 px-4 rounded-xl shadow transition duration-150">
                 Edit Record
             </a>
+            {% endif %}
+            {% if perms.pharmacy_app.delete_patient %}
             <a href="{% url 'patient_delete' pk=patient.pk %}" 
-               class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-xl shadow transition duration-150">
+               class="bg-red-700 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-xl shadow transition duration-150">
                 Delete Record
             </a>
+            {% endif %}
         </div>
     </div>
 
@@ -54,6 +58,10 @@
                     <dt class="font-medium text-gray-600 mb-1">Current Medications:</dt>
                     <dd class="text-gray-800 p-2 bg-gray-50 rounded-md whitespace-pre-wrap">{{ patient.current_medications|default_if_none:"None Listed" }}</dd>
                 </div>
+                <div>
+                    <dt class="font-medium text-gray-600 mb-1">Current Diagnosis:</dt>
+                    <dd class="text-gray-800 p-2 bg-gray-50 rounded-md whitespace-pre-wrap">{{ patient.current_diagnosis|default_if_none:"None Recorded" }}</dd>
+                </div>
             </dl>
         </div>
     </div>
@@ -63,6 +71,13 @@
             &larr; Back to Patient Directory
         </a>
     </div>
+        <div class="mt-4 text-sm text-gray-600 text-right">
+            {% if patient.last_modified_by %}
+                Last modified by {{ patient.last_modified_by.username }} on {{ patient.last_modified_at|date:"F j, Y H:i" }}
+            {% else %}
+                Created by {{ patient.created_by.username }} on {{ patient.created_at|date:"F j, Y H:i" }}
+            {% endif %}
+        </div>
 
 </div>
 {% endblock content %}

@@ -20,7 +20,7 @@ This model defines three entities, ensuring patient data is linked to the authen
 * M:1 - Many to One relationship - reacting to FK and creating multiple patient records by one user.
 
 ### ERD Image
-Below is the exported diagram (from Excalidraw) illustrating the entities and relationships described above.
+Below is the exported file (from Excalidraw) showing the idea of my app:
 
 ![PharmaLog ERD](static/images/Untitled-2025-05-06-1931-3.png)
 

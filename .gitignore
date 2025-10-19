@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+db.sqlite3
+/media
+/staticfiles
+
+# Local env file
+.env
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Ignore migrations if you prefer to keep them out of version control (optional)
+# pharmacy_app/migrations/

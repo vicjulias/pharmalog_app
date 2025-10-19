@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Register | PharmaLog{% endblock title %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-12 p-8 bg-white rounded-2xl shadow-2xl border border-indigo-100">
+    <h2 class="text-2xl font-bold text-center text-indigo-700 mb-6">Create an account</h2>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div>
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {{ form.username.errors }}
+        </div>
+        <!-- space for email ? -->
+        <div>
+            {{ form.password1.label_tag }}
+            {{ form.password1 }}
+            {{ form.password1.errors }}
+        </div>
+        <div>
+            {{ form.password2.label_tag }}
+            {{ form.password2 }}
+            {{ form.password2.errors }}
+        </div>
+
+        <button type="submit" class="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold">Register</button>
+    </form>
+
+    <p class="mt-4 text-sm text-gray-600 text-center">Already have an account? <a href="{% url 'login' %}" class="text-indigo-600 hover:text-indigo-800">Log in</a></p>
+</div>
+{% endblock content %}
