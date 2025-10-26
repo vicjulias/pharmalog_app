@@ -101,9 +101,7 @@ LOGIN_REDIRECT_URL = '/'  # Redirects to home page after successful login
 LOGOUT_REDIRECT_URL = '/' # Redirects to home page after successful logout
 LOGIN_URL = '/login/'     # URL to redirect to when login is required
 
-# Minimal file logging so server-side validation errors and tracebacks are
-# persisted to logs/django.log during interactive debugging. This is safe
-# for development; remove or restrict in production.
+# Minimal file logging so server-side validation errors
 import os
 LOGS_DIR = os.path.join(BASE_DIR, 'logs')
 os.makedirs(LOGS_DIR, exist_ok=True)
