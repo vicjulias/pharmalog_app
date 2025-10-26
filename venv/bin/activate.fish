@@ -46,7 +46,7 @@ if test -z "$VIRTUAL_ENV_DISABLE_PROMPT"
     # Save the current fish_prompt function as the function _old_fish_prompt.
     functions -c fish_prompt _old_fish_prompt
 
-    # With the original prompt function renamed, it can override with its own.
+    # With the original prompt function renamed, we can override with our own.
     function fish_prompt
         # Save the return status of the last command.
         set -l old_status $status

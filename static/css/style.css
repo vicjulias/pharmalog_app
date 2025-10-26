@@ -1,8 +1,4 @@
-/* style.css - Tailwind utility rules (kept here for build pipeline).
-	This file uses Tailwind's `@apply` which needs PostCSS/Tailwind to
-	generate final CSS. Keep the `stylelint-disable` so local linters
-	don't flag these directives during development. */
-/* stylelint-disable */
+@tailwind base;
 input[type="text"], input[type="date"], input[type="number"], textarea, select {
 	@apply w-full p-3 \
 		   border border-gray-400  \

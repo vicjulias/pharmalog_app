@@ -23,5 +23,3 @@ db.sqlite3
 # macOS
 .DS_Store
 
-# Ignore migrations if you prefer to keep them out of version control (optional)
-# pharmacy_app/migrations/
