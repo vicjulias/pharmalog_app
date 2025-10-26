@@ -5,38 +5,35 @@ Django settings for PharmaLogProject project.
 from pathlib import Path
 import os
 from decouple import config
-import dj_database_url 
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep it a secret
-# Read SECRET_KEY from environment or .env using python-decouple. Keep a fallback for local development.
-SECRET_KEY = config('SECRET_KEY', default='YOUR_NEW_VERY_LONG_RANDOM_SECRET_KEY_HERE')
-DEBUG = True
+SECRET_KEY = config('SECRET_KEY', default='dev_local_secret_key_change_me')
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# Hosts
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
 
-# Use different database configuration based on environment
-if DEBUG:
-    # Local development database
+# Database: prefer DATABASE_URL (production), fallback to sqlite for local/dev
+DATABASE_URL = config('DATABASE_URL', default=None)
+if DATABASE_URL:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'PharmaLogProject',
-        }
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
     }
 else:
-    # Production database from environment variable provided by Render
     DATABASES = {
-        'default': dj_database_url.config(
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
 
-
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
+# Static files (for collectstatic + WhiteNoise)
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Application definition
 INSTALLED_APPS = [
