@@ -3,14 +3,30 @@ Django settings for PharmaLogProject project.
 """
 
 from pathlib import Path
+import os
 from decouple import config
 
-# Paths inside the project like this: BASE_DIR / 'The example you gave: BASE_DIR / 'The example you gave: BASE_DIR / 'sub-directory'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep it a secret
 # Read SECRET_KEY from environment or .env using python-decouple. Keep a fallback for local development.
 SECRET_KEY = config('SECRET_KEY', default='YOUR_NEW_VERY_LONG_RANDOM_SECRET_KEY_HERE')
+
+# Database config: prefer DATABASE_URL (production), otherwise use sqlite for local/dev.
+# Add dj-database-url to requirements.txt (see repo).
+DATABASE_URL = config("DATABASE_URL", default=None)
+if DATABASE_URL:
+    import dj_database_url
+    DATABASES = {
+        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # SECURITY WARNING: don't run with debug turned on in production
 DEBUG = True
@@ -60,18 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'PharmaLogProject.wsgi.application'
 
-# Database
-DATABASES = {
-    'default': {
-        'ENGINE': config('DB_ENGINE', default='django.db.backends.postgresql'),
-        'NAME': config('DB_NAME', default='pharmalog_db'),
-        'USER': config('DB_USER', default='supuser'),
-        'PASSWORD': config('DB_PASSWORD', default='supuser1'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
-    }
-}
-
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
@@ -102,7 +106,6 @@ LOGOUT_REDIRECT_URL = '/' # Redirects to home page after successful logout
 LOGIN_URL = '/login/'     # URL to redirect to when login is required
 
 # Minimal file logging so server-side validation errors
-import os
 LOGS_DIR = os.path.join(BASE_DIR, 'logs')
 os.makedirs(LOGS_DIR, exist_ok=True)
 
