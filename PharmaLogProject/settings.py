@@ -5,31 +5,36 @@ Django settings for PharmaLogProject project.
 from pathlib import Path
 import os
 from decouple import config
+import dj_database_url 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep it a secret
 # Read SECRET_KEY from environment or .env using python-decouple. Keep a fallback for local development.
 SECRET_KEY = config('SECRET_KEY', default='YOUR_NEW_VERY_LONG_RANDOM_SECRET_KEY_HERE')
+DEBUG = True
 
-# Database config: prefer DATABASE_URL (production), otherwise use sqlite for local/dev.
-# Add dj-database-url to requirements.txt (see repo).
-DATABASE_URL = config("DATABASE_URL", default=None)
-if DATABASE_URL:
-    import dj_database_url
+# Database
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+
+# Use different database configuration based on environment
+if DEBUG:
+    # Local development database
     DATABASES = {
-        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'PharmaLogProject',
         }
     }
+else:
+    # Production database from environment variable provided by Render
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
 
-# SECURITY WARNING: don't run with debug turned on in production
-DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 
@@ -47,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -90,12 +96,25 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
-# Tells Django where to find the global static files (like style.css)
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+
+# https://docs.djangoproject.com/en/5.2/howto/static-files/
+
+STATIC_URL = '/static/'
+
+# Always set STATIC_ROOT regardless of DEBUG mode
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Only use compressed storage in production
+if not DEBUG:
+    # Enable the WhiteNoise storage backend
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    
+    # Security settings for production
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
